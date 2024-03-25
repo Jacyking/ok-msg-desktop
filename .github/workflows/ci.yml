@@ -39,7 +39,7 @@ jobs:
       with:
           version: "5.15.2"
       
-     - if  : ${{ steps.cache-vcpkg.outputs.cache-hit != 'true' }}
+    - if  : ${{ steps.cache-vcpkg.outputs.cache-hit != 'true' }}
       name: Run Vcpkg
       uses: lukka/run-vcpkg@v11
 
