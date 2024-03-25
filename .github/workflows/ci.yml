@@ -19,13 +19,12 @@ jobs:
       with:
           submodules: 'true'
 
-    - name: Install Ninja
-      uses: seanmiddleditch/gha-setup-ninja@v3
-
-    - name: Enable Developer Command Prompt
-      uses: ilammy/msvc-dev-cmd@v1.12.0
+    - name: Cache Qt
+      id  : cache-qt
+      uses: actions/cache@v1
       with:
-          arch: "amd64"
+          key: ok-msg-desktop-windows-qt
+          path: ${{ github.workspace }}/../Qt/5.15.2/msvc2019_64
 
     - name: Cache Vcpkg
       id  : cache-vcpkg
@@ -34,22 +33,23 @@ jobs:
           key: ok-msg-desktop-windows-vcpkg
           path: ${{ github.workspace }}/vcpkg_installed
 
-    - name: Cache Qt
-      id  : cache-qt
-      uses: actions/cache@v1
-      with:
-          key: ok-msg-desktop-windows-qt
-          path: ${{ github.workspace }}/../Qt/5.15.2/msvc2019_64
-
-    - if  : ${{ steps.cache-vcpkg.outputs.cache-hit != 'true' }}
-      name: Run Vcpkg
-      uses: lukka/run-vcpkg@v11
-
     - if  : ${{ steps.cache-qt.outputs.cache-hit != 'true' }}
       name: Install Qt
       uses: jurplel/install-qt-action@v3
       with:
           version: "5.15.2"
+      
+     - if  : ${{ steps.cache-vcpkg.outputs.cache-hit != 'true' }}
+      name: Run Vcpkg
+      uses: lukka/run-vcpkg@v11
+
+    - name: Install Ninja
+      uses: seanmiddleditch/gha-setup-ninja@v3
+
+    - name: Enable Developer Command Prompt
+      uses: ilammy/msvc-dev-cmd@v1.12.0
+      with:
+          arch: "amd64"
 
     - name: Configure CMake
       run : cmake -B ${{ github.workspace }}/build -G Ninja -DCMAKE_BUILD_TYPE=Release -DQT_DIR=${{ github.workspace }}/../Qt/5.15.2/msvc2019_64 -DLINK_STATIC_QT=OFF
