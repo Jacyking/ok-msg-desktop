@@ -23,8 +23,8 @@ jobs:
       id  : cache-vcpkg
       uses: actions/cache@v1
       with:
-          path: vcpkg_installed
           key: ok-msg-desktop-windows-vcpkg
+          path: ${{ github.workspace }}/vcpkg_installed
 
     - name: Cache Qt
       id  : cache-qt
