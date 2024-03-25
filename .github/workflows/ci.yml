@@ -26,22 +26,19 @@ jobs:
           key: ok-msg-desktop-windows-qt
           path: ${{ github.workspace }}/../Qt/5.15.2/msvc2019_64
 
-    - name: Cache Vcpkg
-      id  : cache-vcpkg
-      uses: actions/cache@v1
-      with:
-          key: ok-msg-desktop-windows-vcpkg
-          path: ${{ github.workspace }}/vcpkg_installed
-
     - if  : ${{ steps.cache-qt.outputs.cache-hit != 'true' }}
       name: Install Qt
       uses: jurplel/install-qt-action@v3
       with:
           version: "5.15.2"
       
-    - if  : ${{ steps.cache-vcpkg.outputs.cache-hit != 'true' }}
-      name: Run Vcpkg
-      uses: lukka/run-vcpkg@v11
+    - name: Build Vcpkg
+      uses: johnwason/vcpkg-action@v6
+      with:
+        github-binarycache: true
+        token: ${{ github.token }}
+        triplet: x64-windows-release
+        manifest-dir: ${{ github.workspace }}
 
     - name: Install Ninja
       uses: seanmiddleditch/gha-setup-ninja@v3
