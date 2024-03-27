@@ -19,6 +19,13 @@ jobs:
       with:
           submodules: 'true'
 
+    - name: Cache Webrtc
+      id  : cache-webrtc
+      uses: actions/cache@v1
+      with:
+        key: ok-msg-desktop-windows-webrtc
+        path: ${{ github.workspace }}/build/_deps
+
     - name: Cache Qt
       id  : cache-qt
       uses: actions/cache@v1
